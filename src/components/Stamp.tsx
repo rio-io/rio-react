@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import Header from './Header';
 
 export default function Stamp() {
   const location = useLocation();
@@ -10,6 +11,7 @@ export default function Stamp() {
 
   return (
     <>
+      <Header/>
       <div>
         <h1>Org Name</h1>
       </div>

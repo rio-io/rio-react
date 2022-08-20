@@ -4,6 +4,7 @@ import { AccountData, OfflineSigner } from "@cosmjs/proto-signing";
 import styled from "styled-components";
 import { A, Back, Main } from "../App";
 import { useNavigate } from "react-router-dom";
+import Header from './Header'
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -98,26 +99,29 @@ export default function User() {
   };
 
   return (
-    <Main style={{ gap: "0" }}>
-      <Back src={require("../images/Image.png")} />
-      <Title>Login as User</Title>
-      <Desc>
-        Log into your account by simply connecting your <br /> Kepler wallet
-        with us below
-      </Desc>
-      <A
-        style={{ marginBottom: "34px", marginTop: "583px" }}
-        onClick={async () => {
-          await checkAuth().then((data) => {
-            if (data) {
-              navigate("/resume", { state: { address: data } });
-            }
-          });
-        }}
-      >
-        Connect wallet
-      </A>
-    </Main>
+    <>
+      <Header/>
+      <Main style={{ gap: "0" }}>
+        <Back src={require("../images/Image.png")} />
+        <Title>Login as User</Title>
+        <Desc>
+          Log into your account by simply connecting your <br /> Kepler wallet
+          with us below
+        </Desc>
+        <A
+          style={{ marginBottom: "34px", marginTop: "583px" }}
+          onClick={async () => {
+            await checkAuth().then((data) => {
+              if (data) {
+                navigate("/resume", { state: { address: data } });
+              }
+            });
+          }}
+        >
+          Connect wallet
+        </A>
+      </Main>
+    </>
   );
 }
 

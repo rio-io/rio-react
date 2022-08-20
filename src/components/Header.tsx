@@ -13,6 +13,7 @@ export default function Header() {
 
 const Bar = styled.div`
   position: fixed;
+  top: 0;
   width: 428px;
   height: 134px;
   left: 0px;
@@ -23,5 +24,5 @@ const Icon = styled.img`
   display: block;
   margin-left: auto;
   margin-right: auto;
-  padding-top: 70px;
+  margin-top: 60px;
 `;

@@ -6,6 +6,7 @@ import Header from './components/Header'
 export default function App() {
   return (
     <>
+      <Header/>
       <Main>
         <Back src={require("./images/Image.png")} />
         <Text>
@@ -55,6 +56,7 @@ const Text = styled.div`
   line-height: 50px;
   margin-right: auto;
   letter-spacing: -1.85114px;
+  padding-top: 8px;
 `;
 const From = styled.div`
   letter-spacing: -0.022em;
