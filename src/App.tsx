@@ -68,13 +68,13 @@ const From = styled.div`
   }
   margin-bottom: 228px;
 `;
-const Back = styled.img`
+export const Back = styled.img`
   position: absolute;
   left: 158px;
   top: 268px;
   z-index: -1;
 `;
-const Main = styled.div`
+export const Main = styled.div`
   display: flex;
   height: 100vh;
   justify-content: flex-end;
@@ -87,7 +87,7 @@ const Main = styled.div`
   position: relative;
 `;
 
-const A = styled.div`
+export const A = styled.div`
   width: 379px;
   height: 66px;
   background-color: #241c55;

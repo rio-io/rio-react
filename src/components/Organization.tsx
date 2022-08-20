@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChainInfo, Window as KeplrWindow } from "@keplr-wallet/types";
 import { AccountData, OfflineSigner } from "@cosmjs/proto-signing";
 import styled from "styled-components";
+import { A, Back, Main } from "../App";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window extends KeplrWindow {}
 }
 
 export default function Oragnization() {
+  const navigate = useNavigate();
+
   const getTestnetChainInfo = (): ChainInfo => ({
     chainId: "theta-testnet-001",
     chainName: "theta-testnet-001",
@@ -90,9 +94,48 @@ export default function Oragnization() {
       window.getOfflineSigner!("theta-testnet-001");
     // Get the address and balance of your user
     const account: AccountData = (await offlineSigner.getAccounts())[0];
-    console.log(account.address);
+    return account.address;
   };
-  return <Main></Main>;
+
+  return (
+    <Main style={{ gap: "0" }}>
+      <Back src={require("../images/Image.png")} />
+      <Title>Login as Organization</Title>
+      <Desc>
+        Log into your account by simply connecting your <br /> Kepler wallet
+        with us below
+      </Desc>
+      <A
+        style={{ marginBottom: "34px", marginTop: "583px" }}
+        onClick={async () => {
+          await checkAuth().then((data) => {
+            if (data) {
+              navigate("/stamp", { state: { address: data } });
+            }
+          });
+        }}
+      >
+        Connect wallet
+      </A>
+    </Main>
+  );
 }
 
-const Main = styled.div``;
+export const Title = styled.div`
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -1.85114px;
+  line-height: 38px;
+  margin-bottom: 8px;
+  margin-right: auto;
+  color: #241c55;
+`;
+
+export const Desc = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.022em;
+  margin-right: auto;
+  color: #535b5f;
+`;
