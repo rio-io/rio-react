@@ -30,10 +30,11 @@ export default function View() {
       <>
         <Header />
         <Wrapper>
-          <Input
-            value={value}
+          <InputInstruction>Enter the wallet address:</InputInstruction>
+          <TextInput
+            value={address}
             onChange={(e) => {
-              setValue(e.target.value);
+              setAddress(e.target.value);
             }}
           />
           <A
@@ -67,6 +68,18 @@ export default function View() {
     </>
   );
 }
+
+export const InputInstruction = styled.div`
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 35px;
+  letter-spacing: -0.022em;
+  color: #241c55;
+  margin-right: auto;
+  margin-bottom: 25px;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -112,4 +125,19 @@ const Desc = styled.div`
 const Container = styled.div`
   height: 900px;
   background-color: gray;
+`;
+const TextInput = styled.input`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid rgba(36, 28, 85, 0.5);
+  border-radius: 999px;
+  width: 343px;
+  height: 45px;
+  font-size: 20px;
+  padding: 0px 16px;
+  font-family: Poppins;
+  margin-bottom: 75px;
 `;
