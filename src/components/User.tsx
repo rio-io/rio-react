@@ -3,10 +3,7 @@ import { ChainInfo, Window as KeplrWindow } from "@keplr-wallet/types";
 import { AccountData, OfflineSigner } from "@cosmjs/proto-signing";
 import styled from "styled-components";
 import { A, Back, Main } from "../App";
-import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import { SigningStargateClient } from "@cosmjs/stargate";
-import { txClient } from "../generated/rio/rio.rio/module";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -119,11 +116,22 @@ export default function User() {
   return (
     <>
       <Header />
-      <Main>
-        <Img />
-        <Name>Nam YEJI</Name>
-        <Stamps></Stamps>
+      <Main
+        style={{
+          gap: 0,
+          justifyContent: "flex-start",
+          minHeight: "100vh",
+          height: "unset",
+        }}
+      >
+        <Img src={require("../images/profile.png")} />
+        <Name>NAM YEJI</Name>
+        <Desc>PRODUCT OWNER</Desc>
+        <Container>hi</Container>
       </Main>
+      <A style={{ position: "fixed", top: "828px", left: "25px" }}>
+        Generate link
+      </A>
     </>
   );
 }
@@ -135,10 +143,39 @@ const Loading = styled.div`
   height: 100vh;
   font-size: 30px;
 `;
+const Img = styled.img`
+  margin-top: 158px;
+`;
+const Name = styled.div`
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 38px;
+  /* identical to box height, or 120% */
+  margin-top: 8px;
+  text-align: center;
 
-const Img = styled.img``;
-const Name = styled.div``;
-const Stamps = styled.div``;
+  color: #241c55;
+
+  letter-spacing: -1.85114px;
+`;
+const Desc = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  /* Grey 400 */
+
+  color: #535b5f;
+
+  text-align: center;
+  letter-spacing: -0.022em;
+  margin-bottom: 30px;
+`;
+const Container = styled.div`
+  height: 900px;
+  background-color: gray;
+`;
 
 // return (
 //   <>

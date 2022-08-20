@@ -7,19 +7,6 @@ import Header from "./components/Header";
 import { MsgCreateCert } from "./generated/rio/rio.rio/module/types/rio/tx";
 
 export default function App() {
-  /**
-   * 예시
-   */
-  useEffect(() => {
-    axios
-      .get("http://localhost:1317/rio/rio/certs", {
-        params: { address: "cosmos1qpjqrx2ymw7fp7k5p360kkq83yeyd8rs02tuxn" },
-      })
-      .then((res) => {
-        console.log(res);
-      });
-  });
-
   return (
     <>
       <Header />
@@ -103,7 +90,7 @@ export const Main = styled.div`
   gap: 16px;
   padding: 0 24px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 `;
 
 export const A = styled.div`
