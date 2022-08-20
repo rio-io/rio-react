@@ -11,67 +11,51 @@ declare global {
 }
 
 export default function Oragnization() {
-  const navigate = useNavigate();
+  const [event, setEvent] = useState("");
+  const [reciever, setReciever] = useState("");
+  const [type, setType] = useState("");
 
   const getTestnetChainInfo = (): ChainInfo => ({
-    chainId: "theta-testnet-001",
-    chainName: "theta-testnet-001",
+    chainId: "rio",
+    chainName: "RIO",
     // rpc: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
-    rpc: "http://203.254.143.165:1317/",
+    rpc: "http://localhost:26657/",
     // rest: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
-    rest: "http://203.254.143.165:1317/",
+    rest: "http://localhost:1317/",
     bip44: {
       coinType: 118,
     },
     bech32Config: {
-      bech32PrefixAccAddr: "cosmos",
-      bech32PrefixAccPub: "cosmos" + "pub",
-      bech32PrefixValAddr: "cosmos" + "valoper",
-      bech32PrefixValPub: "cosmos" + "valoperpub",
-      bech32PrefixConsAddr: "cosmos" + "valcons",
-      bech32PrefixConsPub: "cosmos" + "valconspub",
+      bech32PrefixAccAddr: "rio",
+      bech32PrefixAccPub: "rio" + "pub",
+      bech32PrefixValAddr: "rio" + "valoper",
+      bech32PrefixValPub: "rio" + "valoperpub",
+      bech32PrefixConsAddr: "rio" + "valcons",
+      bech32PrefixConsPub: "rio" + "valconspub",
     },
     currencies: [
       {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
-        coinDecimals: 6,
-        coinGeckoId: "cosmos",
-      },
-      {
-        coinDenom: "THETA",
-        coinMinimalDenom: "theta",
+        coinDenom: "STAKE",
+        coinMinimalDenom: "stake",
         coinDecimals: 0,
       },
       {
-        coinDenom: "LAMBDA",
-        coinMinimalDenom: "lambda",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "RHO",
-        coinMinimalDenom: "rho",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "EPSILON",
-        coinMinimalDenom: "epsilon",
+        coinDenom: "TOKEN",
+        coinMinimalDenom: "token",
         coinDecimals: 0,
       },
     ],
     feeCurrencies: [
       {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
-        coinDecimals: 6,
-        coinGeckoId: "cosmos",
+        coinDenom: "STAKE",
+        coinMinimalDenom: "stake",
+        coinDecimals: 0,
       },
     ],
     stakeCurrency: {
-      coinDenom: "ATOM",
-      coinMinimalDenom: "uatom",
-      coinDecimals: 6,
-      coinGeckoId: "cosmos",
+      coinDenom: "STAKE",
+      coinMinimalDenom: "stake",
+      coinDecimals: 0,
     },
     coinType: 118,
     gasPriceStep: {
@@ -81,7 +65,6 @@ export default function Oragnization() {
     },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
   });
-
   const checkAuth = async () => {
     // Detect Keplr
     const { keplr } = window;
@@ -93,8 +76,7 @@ export default function Oragnization() {
     // Suggest the testnet chain to Keplr
     await keplr.experimentalSuggestChain(getTestnetChainInfo());
     // Create the signing client
-    const offlineSigner: OfflineSigner =
-      window.getOfflineSigner!("theta-testnet-001");
+    const offlineSigner: OfflineSigner = window.getOfflineSigner!("rio");
     // Get the address and balance of your user
     const account: AccountData = (await offlineSigner.getAccounts())[0];
     return account.address;
@@ -103,45 +85,78 @@ export default function Oragnization() {
   return (
     <>
       <Header />
-      <Main style={{ gap: "0" }}>
-        <Back src={require("../images/Image.png")} />
-        <Title>Login as Organization</Title>
-        <Desc>
-          Log into your account by simply connecting your <br /> Kepler wallet
-          with us below
-        </Desc>
-        <A
-          style={{ marginBottom: "34px", marginTop: "575px" }}
-          onClick={async () => {
-            await checkAuth().then((data) => {
-              if (data) {
-                navigate("/stamp", { state: { address: data } });
-              }
-            });
+      <div>
+        <h1>Org Name</h1>
+      </div>
+      <div>
+        <input
+          value={event}
+          onChange={(e) => {
+            setEvent(e.target.value);
+          }}
+        />
+        <input
+          value={reciever}
+          onChange={(e) => {
+            setReciever(e.target.value);
+          }}
+        />
+        <select
+          onChange={(e) => {
+            setType(e.target.value);
           }}
         >
-          Connect wallet
-        </A>
-      </Main>
+          <option value="competition">Competition</option>
+          <option value="work">Work</option>
+        </select>
+        <button>Submit</button>
+      </div>
     </>
   );
 }
 
-export const Title = styled.div`
-  font-weight: 700;
-  font-size: 32px;
-  letter-spacing: -1.85114px;
-  line-height: 38px;
-  margin-bottom: 8px;
-  margin-right: auto;
-  color: #241c55;
-`;
+//   return (
+//     <>
+//       <Header />
+//       <Main style={{ gap: "0" }}>
+//         <Back src={require("../images/Image.png")} />
+//         <Title>Login as Organization</Title>
+//         <Desc>
+//           Log into your account by simply connecting your <br /> Kepler wallet
+//           with us below
+//         </Desc>
+//         <A
+//           style={{ marginBottom: "34px", marginTop: "575px" }}
+//           onClick={async () => {
+//             await checkAuth().then((data) => {
+//               if (data) {
+//                 navigate("/stamp", { state: { address: data } });
+//               }
+//             });
+//           }}
+//         >
+//           Connect wallet
+//         </A>
+//       </Main>
+//     </>
+//   );
+// }
 
-export const Desc = styled.div`
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: -0.022em;
-  margin-right: auto;
-  color: #535b5f;
-`;
+// export const Title = styled.div`
+//   font-weight: 700;
+//   font-size: 32px;
+//   letter-spacing: -1.85114px;
+//   line-height: 38px;
+//   margin-bottom: 8px;
+//   margin-right: auto;
+//   color: #241c55;
+// `;
+
+// export const Desc = styled.div`
+//   font-weight: 400;
+//   font-size: 16px;
+//   line-height: 24px;
+//   letter-spacing: -0.022em;
+//   margin-right: auto;
+//   color: #535b5f;
+// `;

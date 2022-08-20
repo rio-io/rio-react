@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChainInfo, Window as KeplrWindow } from "@keplr-wallet/types";
 import { AccountData, OfflineSigner } from "@cosmjs/proto-signing";
 import styled from "styled-components";
@@ -6,73 +6,57 @@ import { A, Back, Main } from "../App";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { SigningStargateClient } from "@cosmjs/stargate";
+import { txClient } from "../generated/rio/rio.rio/module";
 
 declare global {
   interface Window extends KeplrWindow {}
 }
 
 export default function User() {
-  const navigate = useNavigate();
+  const [address, setAddress] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const getTestnetChainInfo = (): ChainInfo => ({
-    chainId: "theta-testnet-001",
-    chainName: "theta-testnet-001",
+    chainId: "rio",
+    chainName: "RIO",
     // rpc: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
-    rpc: "http://203.254.143.165:1317/",
+    rpc: "http://localhost:26657/",
     // rest: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
-    rest: "http://203.254.143.165:1317/",
+    rest: "http://localhost:1317/",
     bip44: {
       coinType: 118,
     },
     bech32Config: {
-      bech32PrefixAccAddr: "cosmos",
-      bech32PrefixAccPub: "cosmos" + "pub",
-      bech32PrefixValAddr: "cosmos" + "valoper",
-      bech32PrefixValPub: "cosmos" + "valoperpub",
-      bech32PrefixConsAddr: "cosmos" + "valcons",
-      bech32PrefixConsPub: "cosmos" + "valconspub",
+      bech32PrefixAccAddr: "rio",
+      bech32PrefixAccPub: "rio" + "pub",
+      bech32PrefixValAddr: "rio" + "valoper",
+      bech32PrefixValPub: "rio" + "valoperpub",
+      bech32PrefixConsAddr: "rio" + "valcons",
+      bech32PrefixConsPub: "rio" + "valconspub",
     },
     currencies: [
       {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
-        coinDecimals: 6,
-        coinGeckoId: "cosmos",
-      },
-      {
-        coinDenom: "THETA",
-        coinMinimalDenom: "theta",
+        coinDenom: "STAKE",
+        coinMinimalDenom: "stake",
         coinDecimals: 0,
       },
       {
-        coinDenom: "LAMBDA",
-        coinMinimalDenom: "lambda",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "RHO",
-        coinMinimalDenom: "rho",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "EPSILON",
-        coinMinimalDenom: "epsilon",
+        coinDenom: "TOKEN",
+        coinMinimalDenom: "token",
         coinDecimals: 0,
       },
     ],
     feeCurrencies: [
       {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
-        coinDecimals: 6,
-        coinGeckoId: "cosmos",
+        coinDenom: "STAKE",
+        coinMinimalDenom: "stake",
+        coinDecimals: 0,
       },
     ],
     stakeCurrency: {
-      coinDenom: "ATOM",
-      coinMinimalDenom: "uatom",
-      coinDecimals: 6,
-      coinGeckoId: "cosmos",
+      coinDenom: "STAKE",
+      coinMinimalDenom: "stake",
+      coinDecimals: 0,
     },
     coinType: 118,
     gasPriceStep: {
@@ -94,62 +78,109 @@ export default function User() {
     // Suggest the testnet chain to Keplr
     await keplr.experimentalSuggestChain(getTestnetChainInfo());
     // Create the signing client
-    const offlineSigner: OfflineSigner =
-      window.getOfflineSigner!("theta-testnet-001");
+    const offlineSigner: OfflineSigner = window.getOfflineSigner!("rio");
 
-    const signingClient = await SigningStargateClient.connectWithSigner(
-      "http://203.254.143.165:26657/",
-      offlineSigner
-    );
-    // Get the address and balance of your user
     const account: AccountData = (await offlineSigner.getAccounts())[0];
-    return { client: signingClient, address: account.address };
+
+    /**
+     * 예시
+     */
+    // const tx = await txClient(offlineSigner, {
+    //   addr: "http://localhost:26657/",
+    // });
+    // await tx.signAndBroadcast([
+    //   tx.msgCreateCert({
+    //     creator: account.address,
+    //     title: "test",
+    //   }),
+    // ]);
+
+    // Get the address and balance of your user
+    setAddress(account.address);
   };
+
+  useEffect(() => {
+    setTimeout(async () => {
+      await checkAuth().then(() => {
+        setLoading(false);
+      });
+    }, 500);
+  });
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <Loading>loading...</Loading>
+      </>
+    );
+  }
 
   return (
     <>
       <Header />
-      <Main style={{ gap: "0" }}>
-        <Back src={require("../images/Image.png")} />
-        <Title>Login as User</Title>
-        <Desc>
-          Log into your account by simply connecting your <br /> Kepler wallet
-          with us below
-        </Desc>
-        <A
-          style={{ marginBottom: "34px", marginTop: "575px" }}
-          onClick={async () => {
-            await checkAuth().then((data) => {
-              if (data) {
-                navigate("/resume", {
-                  state: { address: data.address, client: data.client },
-                });
-              }
-            });
-          }}
-        >
-          Connect wallet
-        </A>
+      <Main>
+        <Img />
+        <Name>Nam YEJI</Name>
+        <Stamps></Stamps>
       </Main>
     </>
   );
 }
 
-export const Title = styled.div`
-  font-weight: 700;
-  font-size: 32px;
-  letter-spacing: -1.85114px;
-  line-height: 38px;
-  margin-bottom: 8px;
-  margin-right: auto;
-  color: #241c55;
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 30px;
 `;
 
-export const Desc = styled.div`
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: -0.022em;
-  margin-right: auto;
-  color: #535b5f;
-`;
+const Img = styled.img``;
+const Name = styled.div``;
+const Stamps = styled.div``;
+
+// return (
+//   <>
+//     <Header />
+//     <Main style={{ gap: "0" }}>
+//       <Back src={require("../images/Image.png")} />
+//       <Title>Login as User</Title>
+//       <Desc>
+//         Log into your account by simply connecting your <br /> Kepler wallet
+//         with us below
+//       </Desc>
+//       <A
+//         style={{ marginBottom: "34px", marginTop: "575px" }}
+//         onClick={async () => {
+//           await checkAuth().then((data) => {
+//             if (data) {
+//               navigate(`/resume?address=${data.address}`);
+//             }
+//           });
+//         }}
+//       >
+//         Connect wallet
+//       </A>
+//     </Main>
+//   </>
+// );
+
+// export const Title = styled.div`
+//   font-weight: 700;
+//   font-size: 32px;
+//   letter-spacing: -1.85114px;
+//   line-height: 38px;
+//   margin-bottom: 8px;
+//   margin-right: auto;
+//   color: #241c55;
+// `;
+
+// export const Desc = styled.div`
+//   font-weight: 400;
+//   font-size: 16px;
+//   line-height: 24px;
+//   letter-spacing: -0.022em;
+//   margin-right: auto;
+//   color: #535b5f;
+// `;

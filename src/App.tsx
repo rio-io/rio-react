@@ -4,13 +4,15 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./components/Header";
-import { MsgSend } from "./generated/cosmos/cosmos-sdk/cosmos.bank.v1beta1/module/types/cosmos/bank/v1beta1/tx";
 import { MsgCreateCert } from "./generated/rio/rio.rio/module/types/rio/tx";
 
 export default function App() {
+  /**
+   * 예시
+   */
   useEffect(() => {
     axios
-      .get("http://203.254.143.165:1317/rio/rio/certs", {
+      .get("http://localhost:1317/rio/rio/certs", {
         params: { address: "cosmos1qpjqrx2ymw7fp7k5p360kkq83yeyd8rs02tuxn" },
       })
       .then((res) => {
@@ -114,7 +116,7 @@ export const A = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
+  margin: 0 auto;
   letter-spacing: -0.022em;
   font-weight: 700;
 `;
