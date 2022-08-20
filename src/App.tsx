@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Header from './components/Header'
+import Header from "./components/Header";
 
 export default function App() {
   return (
     <>
-      <Header/>
+      <Header />
       <Main>
         <Back src={require("./images/Image.png")} />
         <Text>
@@ -87,6 +87,7 @@ export const Main = styled.div`
   gap: 16px;
   padding: 0 24px;
   position: relative;
+  overflow: hidden;
 `;
 
 export const A = styled.div`
