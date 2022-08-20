@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { A, Back, Main } from "../App";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
+import { SigningStargateClient } from "@cosmjs/stargate";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -16,8 +17,10 @@ export default function User() {
   const getTestnetChainInfo = (): ChainInfo => ({
     chainId: "theta-testnet-001",
     chainName: "theta-testnet-001",
-    rpc: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
-    rest: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
+    // rpc: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
+    rpc: "http://203.254.143.165:1317/",
+    // rest: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
+    rest: "http://203.254.143.165:1317/",
     bip44: {
       coinType: 118,
     },
@@ -93,9 +96,14 @@ export default function User() {
     // Create the signing client
     const offlineSigner: OfflineSigner =
       window.getOfflineSigner!("theta-testnet-001");
+
+    const signingClient = await SigningStargateClient.connectWithSigner(
+      "http://203.254.143.165:26657/",
+      offlineSigner
+    );
     // Get the address and balance of your user
     const account: AccountData = (await offlineSigner.getAccounts())[0];
-    return account.address;
+    return { client: signingClient, address: account.address };
   };
 
   return (
@@ -113,7 +121,9 @@ export default function User() {
           onClick={async () => {
             await checkAuth().then((data) => {
               if (data) {
-                navigate("/resume", { state: { address: data } });
+                navigate("/resume", {
+                  state: { address: data.address, client: data.client },
+                });
               }
             });
           }}

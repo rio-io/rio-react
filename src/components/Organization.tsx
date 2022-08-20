@@ -16,8 +16,10 @@ export default function Oragnization() {
   const getTestnetChainInfo = (): ChainInfo => ({
     chainId: "theta-testnet-001",
     chainName: "theta-testnet-001",
-    rpc: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
-    rest: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
+    // rpc: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
+    rpc: "http://203.254.143.165:1317/",
+    // rest: "https://rpc.state-sync-01.theta-testnet.polypore.xyz/",
+    rest: "http://203.254.143.165:1317/",
     bip44: {
       coinType: 118,
     },

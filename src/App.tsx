@@ -1,9 +1,23 @@
-import React from "react";
+import { SigningStargateClient } from "@cosmjs/stargate";
+import axios from "axios";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./components/Header";
+import { MsgSend } from "./generated/cosmos/cosmos-sdk/cosmos.bank.v1beta1/module/types/cosmos/bank/v1beta1/tx";
+import { MsgCreateCert } from "./generated/rio/rio.rio/module/types/rio/tx";
 
 export default function App() {
+  useEffect(() => {
+    axios
+      .get("http://203.254.143.165:1317/rio/rio/certs", {
+        params: { address: "cosmos1qpjqrx2ymw7fp7k5p360kkq83yeyd8rs02tuxn" },
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  });
+
   return (
     <>
       <Header />
