@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-function App() {
+export default function App() {
   return (
     <Main>
       <Link to={"/resume"}>Personal</Link>
@@ -20,5 +20,3 @@ const Main = styled.div`
   gap: 10vh;
   flex-direction: column;
 `;
-
-export default App;

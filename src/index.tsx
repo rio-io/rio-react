@@ -15,6 +15,7 @@ root.render(
       <Route path="/" element={<App />}></Route>
       <Route path="/Resume" element={<Resume />}></Route>
       <Route path="/stamp" element={<Stamp />}></Route>
+      <Route path="/view" element={<Stamp />}></Route>
     </Routes>
   </BrowserRouter>
 );
