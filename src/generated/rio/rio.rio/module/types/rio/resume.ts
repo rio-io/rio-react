@@ -1,48 +1,48 @@
 /* eslint-disable */
 import * as Long from "long";
 import { util, configure, Writer, Reader } from "protobufjs/minimal";
+import { Cert } from "../rio/cert";
 
 export const protobufPackage = "rio.rio";
 
-export interface Cert {
+export interface Resume {
   creator: string;
   id: number;
-  certType: string;
-  title: string;
+  certs: Cert[];
+  avatarUrl: string;
+  name: string;
   description: string;
-  owner: string;
   createdAt: number;
 }
 
-const baseCert: object = {
+const baseResume: object = {
   creator: "",
   id: 0,
-  certType: "",
-  title: "",
+  avatarUrl: "",
+  name: "",
   description: "",
-  owner: "",
   createdAt: 0,
 };
 
-export const Cert = {
-  encode(message: Cert, writer: Writer = Writer.create()): Writer {
+export const Resume = {
+  encode(message: Resume, writer: Writer = Writer.create()): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.id !== 0) {
       writer.uint32(16).uint64(message.id);
     }
-    if (message.certType !== "") {
-      writer.uint32(26).string(message.certType);
+    for (const v of message.certs) {
+      Cert.encode(v!, writer.uint32(26).fork()).ldelim();
     }
-    if (message.title !== "") {
-      writer.uint32(34).string(message.title);
+    if (message.avatarUrl !== "") {
+      writer.uint32(34).string(message.avatarUrl);
+    }
+    if (message.name !== "") {
+      writer.uint32(42).string(message.name);
     }
     if (message.description !== "") {
-      writer.uint32(42).string(message.description);
-    }
-    if (message.owner !== "") {
-      writer.uint32(50).string(message.owner);
+      writer.uint32(50).string(message.description);
     }
     if (message.createdAt !== 0) {
       writer.uint32(56).int64(message.createdAt);
@@ -50,10 +50,11 @@ export const Cert = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Cert {
+  decode(input: Reader | Uint8Array, length?: number): Resume {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCert } as Cert;
+    const message = { ...baseResume } as Resume;
+    message.certs = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -64,16 +65,16 @@ export const Cert = {
           message.id = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.certType = reader.string();
+          message.certs.push(Cert.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.title = reader.string();
+          message.avatarUrl = reader.string();
           break;
         case 5:
-          message.description = reader.string();
+          message.name = reader.string();
           break;
         case 6:
-          message.owner = reader.string();
+          message.description = reader.string();
           break;
         case 7:
           message.createdAt = longToNumber(reader.int64() as Long);
@@ -86,8 +87,9 @@ export const Cert = {
     return message;
   },
 
-  fromJSON(object: any): Cert {
-    const message = { ...baseCert } as Cert;
+  fromJSON(object: any): Resume {
+    const message = { ...baseResume } as Resume;
+    message.certs = [];
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -98,25 +100,25 @@ export const Cert = {
     } else {
       message.id = 0;
     }
-    if (object.certType !== undefined && object.certType !== null) {
-      message.certType = String(object.certType);
-    } else {
-      message.certType = "";
+    if (object.certs !== undefined && object.certs !== null) {
+      for (const e of object.certs) {
+        message.certs.push(Cert.fromJSON(e));
+      }
     }
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
+    if (object.avatarUrl !== undefined && object.avatarUrl !== null) {
+      message.avatarUrl = String(object.avatarUrl);
     } else {
-      message.title = "";
+      message.avatarUrl = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
     }
     if (object.description !== undefined && object.description !== null) {
       message.description = String(object.description);
     } else {
       message.description = "";
-    }
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
-    } else {
-      message.owner = "";
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = Number(object.createdAt);
@@ -126,21 +128,26 @@ export const Cert = {
     return message;
   },
 
-  toJSON(message: Cert): unknown {
+  toJSON(message: Resume): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.id !== undefined && (obj.id = message.id);
-    message.certType !== undefined && (obj.certType = message.certType);
-    message.title !== undefined && (obj.title = message.title);
+    if (message.certs) {
+      obj.certs = message.certs.map((e) => (e ? Cert.toJSON(e) : undefined));
+    } else {
+      obj.certs = [];
+    }
+    message.avatarUrl !== undefined && (obj.avatarUrl = message.avatarUrl);
+    message.name !== undefined && (obj.name = message.name);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.owner !== undefined && (obj.owner = message.owner);
     message.createdAt !== undefined && (obj.createdAt = message.createdAt);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Cert>): Cert {
-    const message = { ...baseCert } as Cert;
+  fromPartial(object: DeepPartial<Resume>): Resume {
+    const message = { ...baseResume } as Resume;
+    message.certs = [];
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
@@ -151,25 +158,25 @@ export const Cert = {
     } else {
       message.id = 0;
     }
-    if (object.certType !== undefined && object.certType !== null) {
-      message.certType = object.certType;
-    } else {
-      message.certType = "";
+    if (object.certs !== undefined && object.certs !== null) {
+      for (const e of object.certs) {
+        message.certs.push(Cert.fromPartial(e));
+      }
     }
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
+    if (object.avatarUrl !== undefined && object.avatarUrl !== null) {
+      message.avatarUrl = object.avatarUrl;
     } else {
-      message.title = "";
+      message.avatarUrl = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
     }
     if (object.description !== undefined && object.description !== null) {
       message.description = object.description;
     } else {
       message.description = "";
-    }
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
-    } else {
-      message.owner = "";
     }
     if (object.createdAt !== undefined && object.createdAt !== null) {
       message.createdAt = object.createdAt;

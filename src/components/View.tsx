@@ -8,7 +8,7 @@ export default function View() {
   const [pending, setPending] = useState(true);
   const [address, setAddress] = useState("");
   const [value, setValue] = useState("");
-
+  // rio/rio/resume id로
   /**
    * 예시
    */
@@ -20,7 +20,7 @@ export default function View() {
         })
         .then((res) => {
           setPending(false);
-          console.log(res);
+          console.log(res.data);
         });
     }
   }, [address]);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChainInfo, Window as KeplrWindow } from "@keplr-wallet/types";
 import { AccountData, OfflineSigner } from "@cosmjs/proto-signing";
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import { A, Back, Main } from "../App";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Header from "./Header";
+import { txClient } from "../generated/rio/rio.rio/module";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -14,6 +15,9 @@ declare global {
 export default function Oragnization() {
   const [event, setEvent] = useState("");
   const [reciever, setReciever] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [signer, setSigner] = useState<OfflineSigner>();
+  const [address, setAddress] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
   const options = [
@@ -65,9 +69,9 @@ export default function Oragnization() {
     },
     coinType: 118,
     gasPriceStep: {
-      low: 1,
-      average: 1,
-      high: 1,
+      low: 0.0000000000001,
+      average: 0.0000000000001,
+      high: 0.0000000000001,
     },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
   });
@@ -85,7 +89,42 @@ export default function Oragnization() {
     const offlineSigner: OfflineSigner = window.getOfflineSigner!("rio");
     // Get the address and balance of your user
     const account: AccountData = (await offlineSigner.getAccounts())[0];
-    return account.address;
+    setSigner(offlineSigner);
+    setAddress(account.address);
+  };
+
+  useEffect(() => {
+    setTimeout(async () => {
+      await checkAuth().then(() => {
+        setLoading(false);
+      });
+    }, 500);
+  });
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <Loading>loading...</Loading>
+      </>
+    );
+  }
+
+  const test = async () => {
+    if (signer) {
+      const tx = await txClient(signer, {
+        addr: "http://localhost:26657/",
+      });
+      await tx.signAndBroadcast([
+        tx.msgSendCert({
+          creator: address,
+          to: reciever,
+          title: event,
+          certType: "Work",
+          description: "testdesc",
+        }),
+      ]);
+    }
   };
 
   return (
@@ -128,7 +167,7 @@ export default function Oragnization() {
           }}
           style={{ marginBottom: "55px" }}
         />
-        <A>Submit</A>
+        <A onClick={test}>Submit</A>
         <Goback style={{ marginBottom: "34px" }}>Go Back</Goback>
       </Main>
     </>
@@ -181,6 +220,13 @@ export default function Oragnization() {
 //   color: #535b5f;
 // `;
 
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 30px;
+`;
 export const SelectComponent = styled.div`
   margin-right: auto;
   width: 10rem;
@@ -194,7 +240,7 @@ export const TextInput = styled.input`
   gap: 10px;
   border: 2px solid rgba(36, 28, 85, 0.5);
   border-radius: 999px;
-  width: 378px;
+  width: 347px;
   height: 45px;
   font-size: 20px;
   padding: 0px 16px;

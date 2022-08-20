@@ -4,6 +4,7 @@ import { AccountData, OfflineSigner } from "@cosmjs/proto-signing";
 import styled from "styled-components";
 import { A, Back, Main } from "../App";
 import Header from "./Header";
+import axios from "axios";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -12,6 +13,7 @@ declare global {
 export default function User() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(true);
+  const [certs, setCerts] = useState([]);
 
   const getTestnetChainInfo = (): ChainInfo => ({
     chainId: "rio",
@@ -57,9 +59,9 @@ export default function User() {
     },
     coinType: 118,
     gasPriceStep: {
-      low: 1,
-      average: 1,
-      high: 1,
+      low: 0.0000000000001,
+      average: 0.0000000000001,
+      high: 0.0000000000001,
     },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
   });
@@ -104,6 +106,21 @@ export default function User() {
     }, 500);
   });
 
+  /**
+   * query
+   */
+  useEffect(() => {
+    if (!loading) {
+      axios
+        .get("http://localhost:1317/rio/rio/certs", {
+          params: { address },
+        })
+        .then((res) => {
+          setCerts(res.data["Cert"]);
+        });
+    }
+  }, [loading]);
+
   if (loading) {
     return (
       <>
@@ -127,7 +144,17 @@ export default function User() {
         <Img src={require("../images/profile.png")} />
         <Name>NAM YEJI</Name>
         <Desc>PRODUCT OWNER</Desc>
-        <Container>hi</Container>
+        <Container>
+          {certs.length === 0 ? (
+            <div>none</div>
+          ) : (
+            certs.map((e, i) => {
+              console.log(e);
+
+              return <Item key={i}>1</Item>;
+            })
+          )}
+        </Container>
       </Main>
       <A style={{ position: "fixed", top: "828px", left: "25px" }}>
         Generate link
@@ -135,6 +162,8 @@ export default function User() {
     </>
   );
 }
+
+const Item = styled.div``;
 
 const Loading = styled.div`
   display: flex;
@@ -172,10 +201,7 @@ const Desc = styled.div`
   letter-spacing: -0.022em;
   margin-bottom: 30px;
 `;
-const Container = styled.div`
-  height: 900px;
-  background-color: gray;
-`;
+const Container = styled.div``;
 
 // return (
 //   <>

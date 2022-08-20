@@ -9,10 +9,12 @@ import {
   DirectSecp256k1HdWallet,
 } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgCreateResume } from "./types/rio/tx";
 import { MsgCreateCert } from "./types/rio/tx";
 import { MsgSendCert } from "./types/rio/tx";
 
 const types = [
+  ["/rio.rio.MsgCreateResume", MsgCreateResume],
   ["/rio.rio.MsgCreateCert", MsgCreateCert],
   ["/rio.rio.MsgSendCert", MsgSendCert],
 ];
@@ -54,6 +56,10 @@ const txClient = async (
       msgs: EncodeObject[],
       { fee, memo }: SignAndBroadcastOptions = { fee: defaultFee, memo: "" }
     ) => client.signAndBroadcast(address, msgs, fee, memo),
+    msgCreateResume: (data: MsgCreateResume): EncodeObject => ({
+      typeUrl: "/rio.rio.MsgCreateResume",
+      value: MsgCreateResume.fromPartial(data),
+    }),
     msgCreateCert: (data: MsgCreateCert): EncodeObject => ({
       typeUrl: "/rio.rio.MsgCreateCert",
       value: MsgCreateCert.fromPartial(data),
