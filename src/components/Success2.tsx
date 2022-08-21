@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import animationData from "../ani.json";
 import Lottie from "react-lottie";
 
-export default function Success() {
+export default function Success2() {
   const defaultOptions = {
     loop: false,
     autoplay: true,
@@ -21,7 +21,7 @@ export default function Success() {
           options={defaultOptions}
           style={{ width: "200px", height: "200px" }}
         />
-        <Message>CERTIFICATE ISSUED!</Message>
+        <Message>LINK COPIED!</Message>
         <GotIt>Got it!</GotIt>
       </Modal>
     </>

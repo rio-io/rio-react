@@ -8,20 +8,17 @@ export default function View() {
   const [pending, setPending] = useState(true);
   const [address, setAddress] = useState("");
   const [value, setValue] = useState("");
+  const [certs, setCerts] = useState([]);
   // rio/rio/resume id로
   /**
    * 예시
    */
   useEffect(() => {
     if (address !== "") {
-      axios
-        .get("http://localhost:1317/rio/rio/certs", {
-          params: { address },
-        })
-        .then((res) => {
-          setPending(false);
-          console.log(res.data);
-        });
+      axios.get("http://localhost:1317/rio/rio/resumes/0").then((res) => {
+        setPending(false);
+        setCerts(res.data["Resume"].certs);
+      });
     }
   }, [address]);
 
@@ -63,11 +60,107 @@ export default function View() {
         <Img src={require("../images/profile.png")} />
         <Name>NAM YEJI</Name>
         <Desc>PRODUCT OWNER</Desc>
-        <Container>hi</Container>
+        <Container>
+          <TypeName>AWARDS</TypeName>
+          {certs.map((e: any, i) => {
+            if (e.creator === "rio1qpjqrx2ymw7fp7k5p360kkq83yeyd8rsewlehn") {
+              return (
+                <Item key={i}>
+                  <Logo src={require("../images/Logo.png")} />
+                  <TextBox>
+                    <Title>{e.title}</Title>
+                    <Description>{e.description}</Description>
+                  </TextBox>
+                </Item>
+              );
+            } else {
+              return <div></div>;
+            }
+          })}
+          <TypeName>JOB HISTORY</TypeName>
+          {certs.map((e: any, i) => {
+            if (e.creator === "rio1ec2dwp3wnncy74h2fa3nt086slx2mf7y0gegqv") {
+              return (
+                <Item key={i}>
+                  <Logo src={require("../images/Logo2.png")} />
+                  <TextBox>
+                    <Title>{e.title}</Title>
+                    <Description>{e.description}</Description>
+                  </TextBox>
+                </Item>
+              );
+            } else {
+              return <div></div>;
+            }
+          })}
+          <TypeName>EDUCATION</TypeName>
+          {certs.map((e: any, i) => {
+            if (e.creator === "rio1tsmmxrld973ajga4lwt60t0c3smq0eft3wf5pa") {
+              return (
+                <Item key={i + 1000}>
+                  <Logo src={require("../images/Logo3.png")} />
+                  <TextBox>
+                    <Title>{e.title}</Title>
+                    <Description>{e.description}</Description>
+                  </TextBox>
+                </Item>
+              );
+            } else {
+              return <div></div>;
+            }
+          })}
+        </Container>
       </Main>
     </>
   );
 }
+const TypeName = styled.div`
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  letter-spacing: -0.022em;
+  margin-bottom: 8px;
+  color: #241c55;
+`;
+const Logo = styled.img`
+  margin-right: 25px;
+`;
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const Creator = styled.div``;
+const Description = styled.div`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  /* identical to box height */
+
+  letter-spacing: -0.022em;
+
+  /* Grey 400 */
+
+  color: #535b5f;
+`;
+const Title = styled.div`
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  letter-spacing: -0.022em;
+
+  color: #241c55;
+`;
+
+const Item = styled.div`
+  padding: 12px 0;
+  display: flex;
+`;
 
 export const InputInstruction = styled.div`
   font-family: "Poppins";
@@ -123,8 +216,7 @@ const Desc = styled.div`
   margin-bottom: 30px;
 `;
 const Container = styled.div`
-  height: 900px;
-  background-color: gray;
+  width: 100%;
 `;
 const TextInput = styled.input`
   display: flex;

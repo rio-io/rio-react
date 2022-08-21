@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Header from "./Header";
 import { txClient } from "../generated/rio/rio.rio/module";
+import Success from "./Success";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -18,11 +19,12 @@ export default function Oragnization() {
   const [loading, setLoading] = useState(true);
   const [signer, setSigner] = useState<OfflineSigner>();
   const [address, setAddress] = useState("");
-  const [type, setType] = useState("");
+  const [successMsg, setSuccessMsg] = useState(false);
+  const [type, setType] = useState("competition");
   const [description, setDescription] = useState("");
   const options = [
-    { value: "comptition", label: "Competition" },
-    { value: "work", label: "Work" },
+    { value: "jobhistory", label: "Jobhistory" },
+    { value: "award", label: "Award" },
   ];
 
   const getTestnetChainInfo = (): ChainInfo => ({
@@ -115,15 +117,19 @@ export default function Oragnization() {
       const tx = await txClient(signer, {
         addr: "http://localhost:26657/",
       });
-      await tx.signAndBroadcast([
-        tx.msgSendCert({
-          creator: address,
-          to: reciever,
-          title: event,
-          certType: "Work",
-          description: "testdesc",
-        }),
-      ]);
+      await tx
+        .signAndBroadcast([
+          tx.msgSendCert({
+            creator: address,
+            to: reciever,
+            title: event,
+            certType: type,
+            description: description,
+          }),
+        ])
+        .then(() => {
+          setSuccessMsg(true);
+        });
     }
   };
 
@@ -131,42 +137,75 @@ export default function Oragnization() {
     <>
       <Main>
         <Header />
+        {successMsg && <Success />}
         <img src={require("../images/junction_logo.png")}></img>
         <CompanyTitle>JunctionAsia 2022</CompanyTitle>
         <div style={{ display: "flex" }}>
           <InputInstruction>Experience Type:</InputInstruction>
           <SelectComponent>
-            <Select options={options} />
+            <Select
+              options={options}
+              onChange={(e) => {
+                console.log(e?.value);
+              }}
+            />
           </SelectComponent>
         </div>
         {/* <InputInstruction>
           Enter qualification
         </InputInstruction> */}
-        <TextInput
-          placeholder="Enter qualification"
-          value={event}
-          onChange={(e) => {
-            setEvent(e.target.value);
-          }}
-        />
-        <TextInput
-          placeholder="Enter description"
-          value={description}
-          onChange={(e) => {
-            setDescription(e.target.value);
-          }}
-        />
+        <div style={{ position: "relative" }}>
+          <TextInput
+            placeholder="Enter qualification"
+            value={event}
+            onChange={(e) => {
+              setEvent(e.target.value);
+            }}
+          />
+          <img
+            onClick={() => {
+              setEvent("");
+            }}
+            src={require("../images/x-icon.png")}
+            style={{ position: "absolute", top: "12px", right: "20px" }}
+          />
+        </div>
+        <div style={{ position: "relative" }}>
+          <TextInput
+            placeholder="Enter description"
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+          />
+          <img
+            onClick={() => {
+              setDescription("");
+            }}
+            src={require("../images/x-icon.png")}
+            style={{ position: "absolute", top: "12px", right: "20px" }}
+          />
+        </div>
         {/* <InputInstruction>
           Enter receipient wallet address
         </InputInstruction> */}
-        <TextInput
-          placeholder="Enter receipient wallet address"
-          value={reciever}
-          onChange={(e) => {
-            setReciever(e.target.value);
-          }}
-          style={{ marginBottom: "55px" }}
-        />
+        <div style={{ position: "relative" }}>
+          <TextInput
+            placeholder="Enter receipient wallet address"
+            value={reciever}
+            onChange={(e) => {
+              setReciever(e.target.value);
+            }}
+            style={{ marginBottom: "55px" }}
+          />
+          <img
+            onClick={() => {
+              setReciever("");
+            }}
+            src={require("../images/x-icon.png")}
+            style={{ position: "absolute", top: "12px", right: "20px" }}
+          />
+        </div>
         <A onClick={test}>Submit</A>
         <Goback style={{ marginBottom: "34px" }}>Go Back</Goback>
       </Main>

@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { A, Back, Main } from "../App";
 import Header from "./Header";
 import axios from "axios";
+import { txClient } from "../generated/rio/rio.rio/module";
+import Success2 from "./Success2";
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -14,6 +16,9 @@ export default function User() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(true);
   const [certs, setCerts] = useState([]);
+  const [checks, setChecks] = useState([]);
+  const [signer, setSigner] = useState<OfflineSigner>();
+  const [successMsg, setSuccessMsg] = useState(false);
 
   const getTestnetChainInfo = (): ChainInfo => ({
     chainId: "rio",
@@ -66,6 +71,27 @@ export default function User() {
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
   });
 
+  const sendResume = async () => {
+    if (signer) {
+      const tx = await txClient(signer, {
+        addr: "http://localhost:26657/",
+      });
+      const test = await tx
+        .signAndBroadcast([
+          tx.msgCreateResume({
+            creator: address,
+            name: "NAM YEJI",
+            avatarUrl: "/",
+            description: "desc",
+            certs: certs,
+          }),
+        ])
+        .then(() => {
+          setSuccessMsg(true);
+        });
+    }
+  };
+
   const checkAuth = async () => {
     // Detect Keplr
     const { keplr } = window;
@@ -93,6 +119,7 @@ export default function User() {
     //     title: "test",
     //   }),
     // ]);
+    setSigner(offlineSigner);
 
     // Get the address and balance of your user
     setAddress(account.address);
@@ -133,6 +160,8 @@ export default function User() {
   return (
     <>
       <Header />
+
+      {successMsg && <Success2 />}
       <Main
         style={{
           gap: 0,
@@ -145,25 +174,132 @@ export default function User() {
         <Name>NAM YEJI</Name>
         <Desc>PRODUCT OWNER</Desc>
         <Container>
-          {certs.length === 0 ? (
-            <div>none</div>
-          ) : (
-            certs.map((e, i) => {
-              console.log(e);
+          <TypeName>AWARDS</TypeName>
+          {certs.map((e: any, i) => {
+            if (e.creator === "rio1qpjqrx2ymw7fp7k5p360kkq83yeyd8rsewlehn") {
+              return (
+                <Item key={i}>
+                  <Logo src={require("../images/Logo.png")} />
+                  <TextBox>
+                    <Title>{e.title}</Title>
+                    <Description>{e.description}</Description>
+                  </TextBox>
+                  <CheckBox
+                    type="checkbox"
+                    onClick={() => {
+                      // @ts-ignore
+                      setChecks([...checks, e.id]);
+                      // console.log(e.id);
+                    }}
+                  />
+                </Item>
+              );
+            } else {
+              return <div></div>;
+            }
+          })}
+          <TypeName>JOB HISTORY</TypeName>
+          {certs.map((e: any, i) => {
+            if (e.creator === "rio1ec2dwp3wnncy74h2fa3nt086slx2mf7y0gegqv") {
+              return (
+                <Item key={i}>
+                  <Logo src={require("../images/Logo2.png")} />
+                  <TextBox>
+                    <Title>{e.title}</Title>
+                    <Description>{e.description}</Description>
+                  </TextBox>
+                  <CheckBox
+                    type="checkbox"
+                    onClick={() => {
+                      // @ts-ignore
 
-              return <Item key={i}>1</Item>;
-            })
-          )}
+                      setChecks([...checks, e.id]);
+                    }}
+                  />
+                </Item>
+              );
+            } else {
+              return <div></div>;
+            }
+          })}
+          <TypeName>EDUCATION</TypeName>
+          {certs.map((e: any, i) => {
+            if (e.creator === "rio1tsmmxrld973ajga4lwt60t0c3smq0eft3wf5pa") {
+              return (
+                <Item key={i + 1000}>
+                  <Logo src={require("../images/Logo3.png")} />
+                  <TextBox>
+                    <Title>{e.title}</Title>
+                    <Description>{e.description}</Description>
+                  </TextBox>
+                </Item>
+              );
+            } else {
+              return <div></div>;
+            }
+          })}
         </Container>
       </Main>
-      <A style={{ position: "fixed", top: "828px", left: "25px" }}>
+      <A
+        style={{ position: "fixed", top: "828px", left: "25px" }}
+        onClick={sendResume}
+      >
         Generate link
       </A>
     </>
   );
 }
+const CheckBox = styled.input`
+  width: 25px;
+  margin-left: auto;
+`;
 
-const Item = styled.div``;
+const TypeName = styled.div`
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  letter-spacing: -0.022em;
+  margin-bottom: 8px;
+  color: #241c55;
+`;
+const Logo = styled.img`
+  margin-right: 25px;
+`;
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+const Creator = styled.div``;
+const Description = styled.div`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  /* identical to box height */
+
+  letter-spacing: -0.022em;
+
+  /* Grey 400 */
+
+  color: #535b5f;
+`;
+const Title = styled.div`
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  letter-spacing: -0.022em;
+
+  color: #241c55;
+`;
+
+const Item = styled.div`
+  padding: 12px 0;
+  display: flex;
+`;
 
 const Loading = styled.div`
   display: flex;
@@ -201,7 +337,9 @@ const Desc = styled.div`
   letter-spacing: -0.022em;
   margin-bottom: 30px;
 `;
-const Container = styled.div``;
+const Container = styled.div`
+  width: 100%;
+`;
 
 // return (
 //   <>
