@@ -8,6 +8,8 @@ import Select from "react-select";
 import Header from "./Header";
 import { txClient } from "../generated/rio/rio.rio/module";
 import Success from "./Success";
+import { Link } from "react-router-dom";
+
 
 declare global {
   interface Window extends KeplrWindow {}
@@ -207,7 +209,9 @@ export default function Oragnization() {
           />
         </div>
         <A onClick={test}>Submit</A>
-        <Goback style={{ marginBottom: "34px" }}>Go Back</Goback>
+        <StyledLink to={"/"}>
+          <Goback style={{ marginBottom: "34px" }}>Go Back</Goback>
+        </StyledLink>
       </Main>
     </>
   );
@@ -336,4 +340,15 @@ export const Goback = styled.div`
 
   letter-spacing: -0.022em;
   font-weight: 700;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
 `;
