@@ -120,7 +120,6 @@ export default function User() {
     //   }),
     // ]);
     setSigner(offlineSigner);
-
     // Get the address and balance of your user
     setAddress(account.address);
   };
@@ -131,7 +130,7 @@ export default function User() {
         setLoading(false);
       });
     }, 500);
-  });
+  }, []);
 
   /**
    * query
@@ -160,7 +159,6 @@ export default function User() {
   return (
     <>
       <Header />
-
       {successMsg && <Success2 />}
       <Main
         style={{

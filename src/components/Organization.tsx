@@ -101,7 +101,7 @@ export default function Oragnization() {
         setLoading(false);
       });
     }, 500);
-  });
+  }, []);
 
   if (loading) {
     return (

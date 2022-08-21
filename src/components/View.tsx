@@ -29,9 +29,9 @@ export default function View() {
         <Wrapper>
           <InputInstruction>Enter the wallet address:</InputInstruction>
           <TextInput
-            value={address}
+            value={value}
             onChange={(e) => {
-              setAddress(e.target.value);
+              setValue(e.target.value);
             }}
           />
           <A
