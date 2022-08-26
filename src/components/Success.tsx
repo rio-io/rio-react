@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import animationData from "../ani.json";
 import Lottie from "react-lottie";
 
@@ -27,15 +27,6 @@ export default function Success() {
     </>
   );
 }
-
-const Congrats = styled.div`
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  position: absolute;
-  margin: 0 auto;
-  z-index: 1000;
-`;
 
 const GotIt = styled.button`
   display: flex;
